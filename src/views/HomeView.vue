@@ -1,10 +1,31 @@
 <script setup>
 import BannerHome from '@/components/banner/BannerHome.vue';
+import IdentityLoginBox from '@/components/cardbox/IdentityLoginBox.vue';
 import MediumCard from '@/components/cardbox/MediumCard.vue';
 import SmallCard from '@/components/cardbox/SmallCard.vue';
 import NavbarSelect from '@/components/navbar/NavbarSelect.vue';
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
 
+const menus = ref([]);
 
+const fetchData = async () => {
+  try {
+    const response = await axios.get(import.meta.env.VITE_PUBLIC_API_KEY + '/menus');
+    menus.value = response.data.data;
+  } catch (error) {
+    console.error("Error fetching menus:", error);
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Hemm.. , terjadi kesalahan saat mengambil data menu! Hubungi Programmer',
+    });
+  }
+}
+
+onMounted(() => {
+  fetchData();
+});
 </script>
 
 <template>
@@ -23,35 +44,22 @@ import NavbarSelect from '@/components/navbar/NavbarSelect.vue';
       />
       <NavbarSelect/>
       <div class="grid grid-cols-4 gap-4 my-4">
-        <MediumCard/>
-        <MediumCard/>
-        <MediumCard/>
-        <MediumCard/> 
-        <MediumCard/>
-        <MediumCard/>
-        <MediumCard/>
-        <MediumCard/> 
-      </div>
+      <MediumCard v-for="item in menus" :key="item.id" 
+        :image="item.image"
+        :title="item.name"
+        :price="item.price"
+      />
+</div>
     </div>
     <div class="bg-white h-screen fixed w-[25%] max-w-[350px] min-w-[300px] p-6 right-0 top-0 shadow-lg">
-      <div class="flex justify-between pb-6">
-        <h1 class="w-[50%]">
-          <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 448 512"><path fill="#f59e9e" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>
-          I Kadek Wira Atmaja Kadek Wayan
-        </h1>
-        <h1 class="w-[48%]">
-          <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512"><path fill="#ec9c9c" d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
-          Jl. Raya Gunung Mas Gg. Kidul No 1b Denpasar Utara
-        </h1>
-      </div>
+      <IdentityLoginBox/>
       <hr>
       <div class="py-2">
         <div class="overflow-y-auto h-[450px] max-h-[450px]">
           <h1 class="font-semibold text-xl">Pesanan Anda</h1>
-          <SmallCard/>
-          <SmallCard/>
-          <SmallCard/>
-          <SmallCard/>
+          <div class="flex items-center justify-center h-[70%]">
+            <p>Pesanan Anda Masih Kosong</p>
+          </div>
         </div>
         <div class="py-4">
             <h1 class="font-bold text-xl">Total : Rp. 100.000</h1>
