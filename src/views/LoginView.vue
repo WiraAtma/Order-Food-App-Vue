@@ -25,7 +25,7 @@ onMounted(async () => {
                 router.push("/");
             }
         } catch (error) {
-            console.log("Token tidak valid, menghapus token...");
+            // console.log("Token tidak valid, menghapus token...");
             localStorage.removeItem("token");
             sessionStorage.removeItem("token");
             delete axios.defaults.headers.common["Authorization"];
@@ -34,7 +34,7 @@ onMounted(async () => {
 });
 
 const login = async () => {
-    console.log('Aku Di Klik MASUK');
+    // console.log('Aku Di Klik MASUK');
 
     try {
         const response = await axios.post(import.meta.env.VITE_PUBLIC_API_KEY + '/login', form.value);
@@ -55,7 +55,7 @@ const login = async () => {
 
         router.push('/'); // Redirect ke halaman utama setelah login
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         Swal.fire({
             title: "Login Gagal",
             text: "Email atau password salah!",

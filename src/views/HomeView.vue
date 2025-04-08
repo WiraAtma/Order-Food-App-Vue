@@ -1,31 +1,40 @@
 <script setup>
-import BannerHome from '@/components/banner/BannerHome.vue';
-import IdentityLoginBox from '@/components/cardbox/IdentityLoginBox.vue';
-import MediumCard from '@/components/cardbox/MediumCard.vue';
-import SmallCard from '@/components/cardbox/SmallCard.vue';
-import NavbarSelect from '@/components/navbar/NavbarSelect.vue';
-import axios from 'axios';
-import { onMounted, ref } from 'vue';
+  import BannerHome from '@/components/banner/BannerHome.vue';
+  import IdentityLoginBox from '@/components/cardbox/IdentityLoginBox.vue';
+  import MediumCard from '@/components/cardbox/MediumCard.vue';
+  import SmallCard from '@/components/cardbox/SmallCard.vue';
+  import NavbarSelect from '@/components/navbar/NavbarSelect.vue';
+  import axios from 'axios';
+  import { onMounted, ref, watch } from 'vue';
+  import { useRoute } from 'vue-router';
 
-const menus = ref([]);
+  const menus = ref([]);
+  const route = useRoute();
 
-const fetchData = async () => {
-  try {
-    const response = await axios.get(import.meta.env.VITE_PUBLIC_API_KEY + '/menus');
-    menus.value = response.data.data;
-  } catch (error) {
-    console.error("Error fetching menus:", error);
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Hemm.. , terjadi kesalahan saat mengambil data menu! Hubungi Programmer',
-    });
+  const fetchData = async () => {
+    const category = route.query.category;
+    try {
+      const response = await axios.get(import.meta.env.VITE_PUBLIC_API_KEY + '/menus', {
+        params: {
+          category: category,
+        },
+      });
+      menus.value = response.data.data;
+    } catch (error) {
+      console.error("Error fetching menus:", error);
+      Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Hemm.. , terjadi kesalahan saat mengambil data menu! Hubungi Programmer',
+      });
+    }
   }
-}
 
-onMounted(() => {
-  fetchData();
-});
+  onMounted(() => {
+    fetchData();
+  });
+
+  watch(() => route.query.category, fetchData);
 </script>
 
 <template>
@@ -57,9 +66,10 @@ onMounted(() => {
       <div class="py-2">
         <div class="overflow-y-auto h-[450px] max-h-[450px]">
           <h1 class="font-semibold text-xl">Pesanan Anda</h1>
-          <div class="flex items-center justify-center h-[70%]">
+          <!-- <div class="flex items-center justify-center h-[70%]">
             <p>Pesanan Anda Masih Kosong</p>
-          </div>
+          </div> -->
+          <SmallCard/>
         </div>
         <div class="py-4">
             <h1 class="font-bold text-xl">Total : Rp. 100.000</h1>

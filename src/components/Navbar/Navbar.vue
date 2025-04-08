@@ -22,7 +22,7 @@ const checkAdmin = async () => {
           }
       });
       isAdmin.value = response.data.role;
-      console.log("User Data:", isAdmin.value);
+      // console.log("User Data:", isAdmin.value);
     } catch (error) {
         console.error('Error fetching user data:', error);
     }
@@ -49,7 +49,7 @@ const logout = async () => {
         if (result.isConfirmed) {
             try {
               const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-              console.log("Token yang digunakan:", token);
+              // console.log("Token yang digunakan:", token);
               if (!token) {
                   console.warn("Token tidak ditemukan!");
                   return;

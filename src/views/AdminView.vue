@@ -3,16 +3,19 @@
     import Swal from 'sweetalert2';
     import axios from 'axios';
     import FormCreate from '@/components/form/FormCreate.vue';
+    import FormUpdate from '@/components/form/FormUpdate.vue';
 
     const menus = ref([]);
+    const selectedMenu = ref(null);
     const isActive = ref(false);
+    const isActiveUpdate = ref(false);
 
     const fetchAllMenu = async () => {
         try {
             const response = await axios.get(import.meta.env.VITE_PUBLIC_API_KEY + '/menus');
             menus.value = response.data.data;
         } catch (error) {
-            console.error("Error fetching menus:", error);
+            // console.error("Error fetching menus:", error);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -34,7 +37,7 @@
             buttonsStyling: false
             });
             swalWithBootstrapButtons.fire({
-            title: "Anda Yakin Menghapus Menu Nasi Goreng?",
+            title: "Anda Yakin Menghapus Menu Ini?",
             text: "Anda Bisa Mengembalikan Di Panel Sampah",
             icon: "warning",
             showCancelButton: true,
@@ -47,7 +50,7 @@
                 try {
                     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
                     if (!token) {
-                        console.warn("Token tidak ditemukan!");
+                        // console.warn("Token tidak ditemukan!");
                         return;
                     }
 
@@ -64,7 +67,7 @@
                 });
                 fetchAllMenu();
                 } catch (error) {
-                    console.error('Delete gagal:', error);
+                    // console.error('Delete gagal:', error);
                     Swal.fire({
                         title: "Gagal Menghapus",
                         text: "Terjadi kesalahan saat Menghapus. Coba lagi!",
@@ -84,6 +87,11 @@
         });
     }
 
+    const handleUpdate = (menu) => {
+        selectedMenu.value = menu;
+        isActiveUpdate.value = true;
+    }
+
     function handleImage(image) {
         if (!image) {
             return Swal.fire({
@@ -100,11 +108,11 @@
     }
 
     const formatRupiah = (angka) => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-  }).format(angka);
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+    }).format(angka);
 };
 </script>
 
@@ -180,8 +188,8 @@
                         </td>
                         <td class="px-6 py-4 text-right space-x-3">
                             <a href="#" class="font-medium text-blue-600 hover:underline">Lihat</a>
-                            <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
-                            <a href="#" class="font-medium text-blue-600 hover:underline" @click="handleDetele(menu.id)">Hapus</a>
+                            <button href="#" class="font-medium text-blue-600 hover:underline" @click="handleUpdate(menu)" >Edit</button>
+                            <button href="#" class="font-medium text-blue-600 hover:underline" @click="handleDetele(menu.id)">Hapus</button>
                         </td>
                     </tr>
                 </tbody>
@@ -193,5 +201,11 @@
         @closeModal="isActive = false"
         @menuAdded="fetchAllMenu"
         />
+    <FormUpdate
+        :isActiveUpdate="isActiveUpdate" 
+        :menu="selectedMenu"
+        @close-modal="isActiveUpdate = false"
+        @menuAdded="fetchAllMenu"
+    />
 
 </template>
