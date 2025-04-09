@@ -41,8 +41,8 @@
             text: "Anda Bisa Mengembalikan Di Panel Sampah",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No, cancel!",
+            confirmButtonText: "Hapus Menu",
+            cancelButtonText: "Batalkan",
             reverseButtons: true
             }).then(async (result) => {
             if (result.isConfirmed) {
@@ -78,11 +78,7 @@
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
             ) {
-                swalWithBootstrapButtons.fire({
-                title: "Dibatalkan",
-                text: "Menu Anda Tidak Jadi Dihapus :)",
-                icon: "error"
-                });
+                
             }
         });
     }
