@@ -1,9 +1,8 @@
 <script setup>
   import BannerHome from '@/components/banner/BannerHome.vue';
-  import IdentityLoginBox from '@/components/cardbox/IdentityLoginBox.vue';
   import MediumCard from '@/components/cardbox/MediumCard.vue';
-  import SmallCard from '@/components/cardbox/SmallCard.vue';
   import NavbarSelect from '@/components/navbar/NavbarSelect.vue';
+  import OrderMenu from '@/components/Order/OrderMenu.vue';
   import axios from 'axios';
   import { onMounted, ref, watch } from 'vue';
   import { useRoute } from 'vue-router';
@@ -53,29 +52,14 @@
       />
       <NavbarSelect/>
       <div class="grid grid-cols-4 gap-4 my-4">
-      <MediumCard v-for="item in menus" :key="item.id" 
-        :image="item.image"
-        :title="item.name"
-        :price="item.price"
-      />
-</div>
+        <MediumCard v-for="item in menus" :key="item.id" 
+          :image="item.image"
+          :title="item.name"
+          :price="item.price"
+          :id="item.id"
+        />
     </div>
-    <div class="bg-white h-screen fixed w-[25%] max-w-[350px] min-w-[300px] p-6 right-0 top-0 shadow-lg">
-      <IdentityLoginBox/>
-      <hr>
-      <div class="py-2">
-        <div class="overflow-y-auto h-[450px] max-h-[450px]">
-          <h1 class="font-semibold text-xl">Pesanan Anda</h1>
-          <!-- <div class="flex items-center justify-center h-[70%]">
-            <p>Pesanan Anda Masih Kosong</p>
-          </div> -->
-          <SmallCard/>
-        </div>
-        <div class="py-4">
-            <h1 class="font-bold text-xl">Total : Rp. 100.000</h1>
-            <button class="border w-full py-3 rounded-lg bg-red-400 text-white font-semibold mt-3 hover:bg-red-200 hover:text-red-400">Pesan Sekarang</button>
-        </div>
-      </div>
     </div>
+    <OrderMenu/>
   </div>
 </template>
