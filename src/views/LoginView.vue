@@ -34,7 +34,6 @@ onMounted(async () => {
 });
 
 const login = async () => {
-    // console.log('Aku Di Klik MASUK');
 
     try {
         const response = await axios.post(import.meta.env.VITE_PUBLIC_API_KEY + '/login', form.value);

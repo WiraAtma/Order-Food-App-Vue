@@ -1,6 +1,5 @@
 <script setup>
     import MediumCard from '@/components/cardbox/MediumCard.vue';
-    import OrderMenu from '@/components/Order/OrderMenu.vue';
     import axios from 'axios';
 import Swal from 'sweetalert2';
     import { onMounted, ref } from 'vue';
@@ -48,6 +47,5 @@ import Swal from 'sweetalert2';
                 <p>Bookmark Anda Masih Kosong</p>
             </div>
         </div>
-        <OrderMenu/>
     </div>
 </template>

@@ -8,6 +8,7 @@
   import { useRoute } from 'vue-router';
 
   const menus = ref([]);
+  const orderItems = ref([]);
   const route = useRoute();
 
   const fetchData = async () => {
@@ -25,6 +26,18 @@
           icon: 'error',
           title: 'Oops...',
           text: 'Hemm.. , terjadi kesalahan saat mengambil data menu! Hubungi Programmer',
+      });
+    }
+  }
+
+  const handleAddToCart = (item) => {
+    const existingItem = orderItems.value.find(i => i.id === item.id);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      orderItems.value.push({
+        ...item,
+        quantity: 1
       });
     }
   }
@@ -57,9 +70,10 @@
           :title="item.name"
           :price="item.price"
           :id="item.id"
+          @handleAddToCart="handleAddToCart"
         />
     </div>
     </div>
-    <OrderMenu/>
+    <OrderMenu :orderItems="orderItems" @orderSubmitted="orderItems = []"/>
   </div>
 </template>

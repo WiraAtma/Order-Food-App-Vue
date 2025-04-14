@@ -10,6 +10,17 @@ const props = defineProps({
     id: Number,
 });
 
+const emit = defineEmits(['handleAddToCart']);
+
+const triggerAddToCart = () => {
+    emit('handleAddToCart', {
+        id: props.id,
+        name: props.title,
+        price: props.price,
+        image: props.image,
+    });
+}
+
 const formatRupiah = (angka) => {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -20,30 +31,47 @@ const formatRupiah = (angka) => {
 
 const isBookmarked = ref(false);
 
-onMounted(() => {
-    checkBookmarkStatus();
-});
+
 
 const checkBookmarkStatus = async () => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!token) {
+        console.warn('Token tidak tersedia, user belum login');
+        return;
+    }
+
     try {
         const response = await axios.get(`${import.meta.env.VITE_PUBLIC_API_KEY}/bookmarks`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
             }
         });
         isBookmarked.value = response.data.data.some(item => item.menu_id === props.id);
     } catch (error) {
         console.error('Gagal mengambil status bookmark:', error);
+        if (error.response) {
+            console.error('Detail error dari server:', error.response.data);
+        }
     }
 };
 
 const toggleBookmark = async (id) => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!token) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Login Diperlukan',
+            text: 'Silakan login terlebih dahulu untuk bookmark menu.',
+        });
+        return;
+    }
+
     try {
         if (isBookmarked.value) {
             await axios.delete(`${import.meta.env.VITE_PUBLIC_API_KEY}/bookmarks/${id}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                 }
             });
@@ -56,7 +84,7 @@ const toggleBookmark = async (id) => {
         } else {
             await axios.post(`${import.meta.env.VITE_PUBLIC_API_KEY}/bookmarks/${id}`, {}, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                 }
             });
@@ -76,6 +104,10 @@ const toggleBookmark = async (id) => {
         console.error("Error saat toggle bookmark:", error);
     }
 };
+
+onMounted(() => {
+    checkBookmarkStatus();
+});
 </script>
 
 
@@ -85,9 +117,9 @@ const toggleBookmark = async (id) => {
             <div class="w-full h-40 bg-gray-300 rounded-lg flex items-center justify-center">
                 <img :src="image" alt="Card Image" class="w-full h-full object-cover rounded-lg">
             </div>
-            <RouterLink to="/makanan" class="absolute left-1/2 -translate-x-1/2 top-36 bg-white text-red-400 px-6 py-2 rounded-lg shadow-md hover:bg-red-400 hover:text-white transition">
+            <button @click="triggerAddToCart" class="absolute left-1/2 -translate-x-1/2 top-36 bg-white text-red-400 px-6 py-2 rounded-lg shadow-md hover:bg-red-400 hover:text-white transition">
                 Pesan
-            </RouterLink>
+            </button>
             <button @click="toggleBookmark(props.id)" 
                 class="absolute -right-3 -translate-x-1/2 top-0 bg-white text-red-400 px-1 py-1 rounded-lg shadow-md hover:bg-red-400 hover:text-white transition">
                 <svg v-if="!isBookmarked" xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 384 512">
