@@ -1,5 +1,5 @@
 <script setup>
-    import OrderCard from '@/components/cardbox/OrderCard.vue';
+    import OrderListCard from '@/components/cardbox/OrderListCard.vue';
     import axios from 'axios';
     import { onMounted, ref } from 'vue';
 
@@ -25,7 +25,7 @@
             isLoading.value = false;
         }
     }
-
+    
     onMounted(() => {
         fetchOrders();
     });
@@ -33,30 +33,49 @@
 
 <template>
     <div class="ml-5 p-10 w-full flex border h-screen">
-        <div class="w-[48%] mx-5 h-full">
-            <h1 class="font-semibold text-2xl">Pesanan Anda</h1>
+        <div class="w-[33%] mx-5 overflow-y-auto h-full max-h-full">
+            <h1 class="font-semibold text-2xl">Orderan Kostumer</h1>
             <div v-if="isLoading" class="flex flex-col">
                 <div v-for="n in 8" :key="n" class="w-full h-20 my-3 bg-gray-200 animate-pulse rounded-lg"></div>
             </div>
 
-            <OrderCard v-else v-for="(item, index) in orders.filter(o => o.status != 'done')" :key="index"
+            <OrderListCard v-else v-for="(item, index) in orders.filter(o => o.status === 'order')" :key="index"
                 :order_id="item.order_id"
                 :status="item.status"
+                :items="item.items"
                 :created_at="item.created_at"
                 :updated_at="item.updated_at"
+                @menuAdded="fetchOrders"
             />
-
         </div>
-        <div class="w-[48%] mx-5 h-full">
-            <h1 class="font-semibold text-2xl">Pesanan Selesai</h1>
+        <div class="w-[33%] mx-5 overflow-y-auto h-full max-h-full">
+            <h1 class="font-semibold text-2xl">Orderan Dikirim</h1>
             <div v-if="isLoading" class="flex flex-col">
                 <div v-for="n in 8" :key="n" class="w-full h-20 my-3 bg-gray-200 animate-pulse rounded-lg"></div>
             </div>
-            <OrderCard v-for="(item, index) in orders.filter(o => o.status === 'done')" :key="index"
+
+            <OrderListCard v-else v-for="(item, index) in orders.filter(o => o.status === 'delivery')" :key="index"
                 :order_id="item.order_id"
                 :status="item.status"
+                :items="item.items"
                 :created_at="item.created_at"
                 :updated_at="item.updated_at"
+                @menuAdded="fetchOrders"
+            />
+        </div>
+        <div class="w-[33%] mx-5 overflow-y-auto h-full max-h-full">
+            <h1 class="font-semibold text-2xl">Orderan Selesai</h1>
+            <div v-if="isLoading" class="flex flex-col">
+                <div v-for="n in 8" :key="n" class="w-full h-20 my-3 bg-gray-200 animate-pulse rounded-lg"></div>
+            </div>
+
+            <OrderListCard v-else v-for="(item, index) in orders.filter(o => o.status === 'done')" :key="index"
+                :order_id="item.order_id"
+                :status="item.status"
+                :items="item.items"
+                :created_at="item.created_at"
+                :updated_at="item.updated_at"
+                @menuAdded="fetchOrders"
             />
         </div>
     </div>

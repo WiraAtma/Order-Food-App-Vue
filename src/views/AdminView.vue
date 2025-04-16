@@ -9,9 +9,11 @@
     const selectedMenu = ref(null);
     const isActive = ref(false);
     const isActiveUpdate = ref(false);
+    const isLoading = ref(true);
 
     const fetchAllMenu = async () => {
         try {
+            isLoading.value = true;
             const response = await axios.get(import.meta.env.VITE_PUBLIC_API_KEY + '/menus');
             menus.value = response.data.data;
         } catch (error) {
@@ -21,6 +23,8 @@
                 title: 'Oops...',
                 text: 'Hemm.. , terjadi kesalahan saat mengambil data menu! Hubungi Programmer',
             });
+        } finally {
+            isLoading.value = false;
         }
     }
 
@@ -112,7 +116,9 @@
 };
 </script>
 
-<template>
+
+
+<template v-else>
     <div class="ml-14 p-10">
         <div class="mb-5 text-center">
             <h1>ADMIN PANEL</h1>
@@ -155,11 +161,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white border-b border-gray-200 hover:bg-gray-100" 
-                        v-for="(menu, index) in menus" :key="menu.id"
-                    >
+                    <template v-if="isLoading">
+                        <tr v-for="n in 5" :key="n" class="animate-pulse bg-gray-100">
+                        <td colspan="9" class="px-6 py-4 text-center text-gray-400">Loading data...</td>
+                        </tr>
+                    </template>
+
+                    <template v-else>
+                        <tr class="bg-white border-b border-gray-200 hover:bg-gray-100" 
+                            v-for="(menu, index) in menus" :key="menu.id"
+                        >
                         <th scope="row" class="px-6 py-4">
-                            {{ index+1 }}
+                            {{ index + 1 }}
                         </th>
                         <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                             {{ menu.name }}
@@ -184,10 +197,11 @@
                         </td>
                         <td class="px-6 py-4 text-right space-x-3">
                             <a href="#" class="font-medium text-blue-600 hover:underline">Lihat</a>
-                            <button href="#" class="font-medium text-blue-600 hover:underline" @click="handleUpdate(menu)" >Edit</button>
-                            <button href="#" class="font-medium text-blue-600 hover:underline" @click="handleDetele(menu.id)">Hapus</button>
+                            <button class="font-medium text-blue-600 hover:underline" @click="handleUpdate(menu)">Edit</button>
+                            <button class="font-medium text-blue-600 hover:underline" @click="handleDetele(menu.id)">Hapus</button>
                         </td>
-                    </tr>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>

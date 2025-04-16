@@ -52,7 +52,9 @@ const login = async () => {
             icon: "success"
         });
 
-        router.push('/'); // Redirect ke halaman utama setelah login
+        router.push('/').then(() => {
+          window.location.reload()
+        }); // Redirect ke halaman utama setelah login
     } catch (error) {
         // console.error(error);
         Swal.fire({

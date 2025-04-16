@@ -7,13 +7,14 @@
   import { onMounted, ref, watch } from 'vue';
   import { useRoute } from 'vue-router';
 
-  const menus = ref([]);
+  const menus = ref(null);
   const orderItems = ref([]);
   const route = useRoute();
 
   const fetchData = async () => {
     const category = route.query.category;
     try {
+      menus.value = null; // Set menus to null before fetching
       const response = await axios.get(import.meta.env.VITE_PUBLIC_API_KEY + '/menus', {
         params: {
           category: category,
@@ -64,7 +65,12 @@
         short-description="Jadikan orderan peratama mu hanya dengan Rp. 100.000 dan dapatkan dessert gratis!"
       />
       <NavbarSelect/>
-      <div class="grid grid-cols-4 gap-4 my-4">
+      <div v-if="menus === null" class="grid grid-cols-4 gap-4 my-4">
+        <div v-for="n in 8" :key="n" class="w-full h-48 bg-gray-200 animate-pulse rounded-lg"></div>
+      </div>
+
+      <!-- Real Cards -->
+      <div v-else class="grid grid-cols-4 gap-4 my-4">
         <MediumCard v-for="item in menus" :key="item.id" 
           :image="item.image"
           :title="item.name"
@@ -72,7 +78,7 @@
           :id="item.id"
           @handleAddToCart="handleAddToCart"
         />
-    </div>
+      </div>
     </div>
     <OrderMenu :orderItems="orderItems" @orderSubmitted="orderItems = []"/>
   </div>

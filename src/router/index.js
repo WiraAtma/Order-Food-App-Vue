@@ -4,6 +4,7 @@ import AdminView from '@/views/AdminView.vue'
 import LoginView from '@/views/LoginView.vue'
 import BookmarkView from '@/views/BookmarkView.vue';
 import OrderView from '@/views/OrderView.vue';
+import OrderListView from '@/views/OrderListView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,7 +32,10 @@ const router = createRouter({
     {
       path: '/order',
       name: 'order',
-      component: OrderView
+      children: [
+        {path: '', component: OrderView},
+        {path: 'list', component: OrderListView},
+      ]
     },
   ],
 });
